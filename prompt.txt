@@ -1,0 +1,100 @@
+according to the given data structres write simple minimal frondend that serve the json from the provided apis for these apis
+/v1/users (works with pagination)
+func (app *application) listUsersHandler(w http.ResponseWriter, r *http.Request) {
+
+page, err := app.readPageParameter(r)
+if err != nil {
+app.serverErrorResponse(w, r, err)
+return
+}
+
+users, err := app.models.Users.GetAllUsers(int(page))
+if err != nil {
+app.badRequestResponse(w, r, err)
+return
+}
+
+if len(users) == 0 {
+app.notFoundResponse(w, r)
+return
+}
+
+data := map[string]interface{}{
+"page": page,
+"users": users,
+}
+
+err = app.writeJSON(w, http.StatusOK, data, nil)
+if err != nil {
+app.serverErrorResponse(w, r, err)
+}
+}
+
+/v1/supports (works with pagination)
+func (app application) listSupportsHandler(w http.ResponseWriter, r *http.Request) {
+page, err := app.readPageParameter(r)
+if err != nil {
+app.serverErrorResponse(w, r, err)
+return
+}
+
+supports, err := app.models.Support.GetAllSupports(int(page))
+if err != nil {
+app.badRequestResponse(w, r, err)
+return
+}
+
+if len(supports) == 0 {
+app.notFoundResponse(w, r)
+return
+}
+
+data := map[string]interface{}{
+"page": page,
+"supports": supports,
+}
+
+err = app.writeJSON(w, http.StatusOK, data, nil)
+if err != nil {
+app.serverErrorResponse(w, r, err)
+}
+
+}
+
+/v1/supports/:id/page
+/v1/users/:id/page
+
+for all these 4 routes wirte frontend page what served the returned json for the user to see
+keep in mind the project structure
+.
+├── bin
+├── cmd
+│   └── api
+│   ├── dashboard.go
+│   ├── errors.go
+│   ├── healthcheck.go
+│   ├── helpers.go
+│   ├── main.go
+│   ├── middleware.go
+│   ├── routes.go
+│   ├── support_page.go
+│   ├── supports.go
+│   ├── user_page.go
+│   └── users.go
+├── go.mod
+├── go.sum
+├── internal
+│   └── data
+│   ├── models.go
+│   ├── support_page.go
+│   ├── supports.go
+│   ├── user_page.go
+│   └── users.go
+├── migrations
+│   ├── 01_initial_schema.down.sql
+│   └── 01_initial_schema.up.sql
+└── README.md
+
+
+define routes and serve the files in their corresponding routes in the routes.go file using the provided router
+write complete html css js files in clean strcuture keep the original given structue on mind
